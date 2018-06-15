@@ -318,6 +318,7 @@ router.post('/delete/:listId', (req, res) => {
 router.get('/subscriptions/:listId', (req, res) => {
     let start = parseInt(req.query.start || 0, 10);
     let limit = parseInt(req.query.limit || 10000, 10);
+    let email = req.query.email || null;
 
     lists.getByCid(req.params.listId, (err, list) => {
 	if (err) {
@@ -336,6 +337,18 @@ router.get('/subscriptions/:listId', (req, res) => {
 		});
 	    }
 	    res.status(200);
+
+        if (email) {
+            let finalRows = [];
+            rows.forEach(row => {
+                if (row.email == email) {
+                    finalRows.push(row);
+                }
+            });
+            rows = finalRows;
+            total = rows.length;
+        }
+
 	    res.json({
 		data: {
 		    total: total,
